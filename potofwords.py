@@ -45,7 +45,7 @@ __________       __    ________   _____   __      __                .___
                                \/               \/                   \/    \/                            
 """)
 
-webpage = input('Enter website to grab info from. Example: company.com or socialmedia.com/personalprofile ')
+webpage = input('Enter website to grab info from. Example: http://company.com or http://socialmedia.com/personalprofile ')
 if (webpage[-1] == '/'):
 	webpage = webpage[0:-1]
 	
@@ -78,11 +78,11 @@ connectors = ["-", ".","_","/","!","@",'#','$']
 datelist = htmlpage.split()
 #Will find dates in the text
 for dates in datelist:
-    if(len(dates)>2 and htmlpage.count(dates) > 1):
+    if(len(dates) > 2 and htmlpage.count(dates) > 1):
         if(dates[2]=="/"):
             daymonth = dates[0:5]
             suffixes.append(daymonth.replace("/", ""))
-        if(dates[2]=="/" and dates[5]=="/"):
+        if(dates[2]=="/" and len(dates) > 6 and dates[5] =="/"):
             suffixes.append(dates[:10].replace("/", ""))
             justyear = dates[5:10]
             suffixes.append(justyear.replace("/", ""))
@@ -92,7 +92,7 @@ for dates in datelist:
         if(dates[2]=="-"):
             daymonth = dates[0:5]
             suffixes.append(daymonth.replace("-", ""))
-        if(dates[2]=="-" and dates[5]=="-"):
+        if(dates[2]=="-" and len(dates) > 6 and dates[5]=="-" ):
             suffixes.append(dates[:10].replace("-", ""))
             justyear = dates[5:10]
             suffixes.append(justyear.replace("-", ""))
