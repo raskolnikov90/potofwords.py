@@ -9,7 +9,9 @@ Update 6/23/2023: Pot of words also now creates least common words list, added t
 
 Requires BeautifulSoup module, run the following command on your terminal or python interpreter:
 
-/ pip install beautifulsoup4 /
+```
+pip install beautifulsoup4
+```
 
 Using Pot of words examples:
 ![image](https://github.com/raskolnikov90/potofwords.py/assets/44821234/37868421-d890-4742-8f0a-7ad9fca4ab0e)
