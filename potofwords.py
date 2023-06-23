@@ -2,6 +2,8 @@ from bs4 import BeautifulSoup
 from bs4.element import Tag
 import requests
 from dateutil import parser
+import random
+
 
 blocks = ["p", "h1", "h2", "h3", "h4", "h5", "blockquote", "div", "title"]
 
@@ -48,7 +50,8 @@ __________       __    ________   _____   __      __                .___
 webpage = input('Enter website to grab info from. Example: http://company.com or http://socialmedia.com/personalprofile ')
 if (webpage[-1] == '/'):
 	webpage = webpage[0:-1]
-	
+if (webpage.count("http")==0):
+	webpage = 'https://'+webpage
 
 
 def get_html(url):
@@ -72,7 +75,7 @@ if(subdoms == 'y' or  subdoms == 'Y' or subdoms == 'yes' or subdoms == 'Yes'):
 			htmlpage = htmlpage + get_html(webpage+"/"+subs)
 			print(webpage+"/"+subs + " info found an added")
 
-suffixes = ["2020", "2021", "2023","123","2022","1234","xxx", "1", "$","qwerty","66","1122",'321','420','69','one','One','admin']
+suffixes = ["2020", "2021", "2023","123","2022","1234","xxx", "1", "$","qwerty","66","1122",'321','420','69','one','One','admin','7','77']
 connectors = ["-", ".","_","/","!","@",'#','$']
 
 datelist = htmlpage.split()
@@ -116,7 +119,7 @@ for words in wordlist:
     for duplicates in common:
         if(duplicates == words):
             common.remove(duplicates)
-    if(htmlpage.count(words) >= 3 and len(words) > 4):
+    if(htmlpage.count(words) >= 3 and len(words) >= 4):
         common.append(words)
         wordlist.remove(words)
     else:
@@ -124,14 +127,31 @@ for words in wordlist:
 with open("commonwordsinpage.txt","w") as file:
 	for words in common:
 	    file.write(words+"\n")
-	print("commonwordsinpage.txt created, added "+ str(len(common))+ " words")
+	print("commonwordsinpage.txt created, added "+ str(len(common))+ " most common words")
+	    
+leastcommon = []
+for words in wordlist:
+    for duplicates in leastcommon:
+        if(duplicates == words):
+            leastcommon.remove(duplicates)
+    if(htmlpage.count(words) <= 2 and len(words) >= 4 and len(words) <= 14):
+        leastcommon.append(words)
+        wordlist.remove(words)
+    else:
+        wordlist.remove(words)
+with open("leastcommonwords.txt","w") as file:
+	for words in leastcommon:
+	    file.write(words+"\n")
+	print("leastcommonwords.txt created, added "+ str(len(leastcommon))+ " least common words")
 	    
 
 
+shufflingoptions = input("""What you wanna do now?
+1-Add capitalization and suffixes to words. Example: blah into blah2020, Blah123.
+2-Randomly combine common and least common words found. Example: words blah and bleh into blah@bleh or Blah.Bleh
+""")
 
-addsuffixes = input("Add capitalization and suffixes to words? Example: blah into blah2020, Blah123. Y/n? ")
-
-if(addsuffixes == 'y' or  addsuffixes == 'Y' or addsuffixes == 'yes' or addsuffixes == 'Yes'):
+if(int(shufflingoptions) == 1 ):
 	with open("finalwordlist.txt","w") as file:
 		for words in common:
 			file.write(words+"\n")
@@ -142,8 +162,38 @@ if(addsuffixes == 'y' or  addsuffixes == 'Y' or addsuffixes == 'yes' or addsuffi
 				for connector in connectors:
 					file.write(words+connector+suffix+"\n")
 					file.write(words.capitalize()+connector+suffix+"\n")
-		print("added suffixes to worlist and saved as finalwordlist.txt")
+		print("added suffixes to wordlist and saved as finalwordlist.txt")
 	with open("finalwordlist.txt","r") as file:
 		print(str(len(file.readlines())) + " words")
 		
-		
+	with open("finalwithleastcommon.txt","w") as file:
+		for words in leastcommon:
+			file.write(words+"\n")
+			file.write(words.capitalize()+"\n")
+			for suffix in suffixes:
+				file.write(words+suffix+"\n")
+				file.write(words.capitalize()+suffix+"\n")
+				for connector in connectors:
+					file.write(words+connector+suffix+"\n")
+					file.write(words.capitalize()+connector+suffix+"\n")
+		print("added suffixes to least common wordlist and saved as finalwithleastcommon.txt")
+	with open("finalwithleastcommon.txt","r") as file:
+		print(str(len(file.readlines())) + " words")
+if(int(shufflingoptions) == 2 ):
+	connectors.append("")
+	with open("randomcombinations.txt","w") as file:
+		for i in range(0, 2500):	
+			file.write(random.choice(common)+random.choice(connectors)+random.choice(leastcommon)+"\n")
+			file.write(random.choice(common).capitalize()+random.choice(connectors)+random.choice(leastcommon)+"\n")
+			file.write(random.choice(common).capitalize()+random.choice(connectors)+random.choice(leastcommon).capitalize()+"\n")
+			file.write(random.choice(common)+random.choice(connectors)+random.choice(leastcommon).capitalize()+"\n")
+			
+			file.write(random.choice(leastcommon)+random.choice(connectors)+random.choice(common)+"\n")
+			file.write(random.choice(leastcommon).capitalize()+random.choice(connectors)+random.choice(common)+"\n")
+			file.write(random.choice(leastcommon).capitalize()+random.choice(connectors)+random.choice(common).capitalize()+"\n")
+			file.write(random.choice(leastcommon)+random.choice(connectors)+random.choice(common).capitalize()+"\n")
+				
+		print("randomly combined words and saved as randomcombinations.txt")
+	with open("randomcombinations.txt","r") as file:
+		print(str(len(file.readlines())) + " words")
+				
