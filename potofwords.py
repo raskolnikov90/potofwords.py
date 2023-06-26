@@ -4,9 +4,6 @@ import requests
 from dateutil import parser
 import random
 
-
-blocks = ["p", "h1", "h2", "h3", "h4", "h5", "blockquote", "div", "title"]
-
 print(""""                                                                                
     .*///**,,,,,.              .,,*//((#(((((((((//**,,....                     
  ,*/((/       .*,,.              .,,,,.....,,,,,...                             
@@ -55,27 +52,50 @@ if (webpage.count("http")==0):
 
 
 def get_html(url):
-	#open with GET method
-	resp = requests.get(url)
-    	#http_respone 200 means OK status
-	if resp.status_code==200:
-		print("Successfully opened the web page")
-		soup = BeautifulSoup(resp.text,'html.parser')
-		return soup.get_text()
-	else:
-		return "Error"
+	try:
+		#open with GET method
+		resp = requests.get(url, timeout=5)
+	    	#http_respone 200 means OK status
+		if resp.status_code==200:
+			print("Successfully opened the web page")
+			soup = BeautifulSoup(resp.text,'html.parser')
+			return soup.get_text()
+		else:
+			return "Error"
+	except:
+		return 'Failed connection'
 
 htmlpage = get_html(webpage)
 commonsubs = ["about", "info", "contact","blog","blogs","posts","faq","friends","groups","about_work_and_education","about_places","about_family_and_relationships", "recent-activity/all/","recent-activity", "people","employees"]
+
+
 subdoms = input("Attempt gathering from subdomains? Example: webpage.com will be added adresses like webpage.com/about. Y/n? ")
+if(subdoms == 'y' or  subdoms == 'Y' or subdoms == 'yes' or subdoms == 'Yes'):
+	indepth = input('Wanna explore directories in depth? 100 directories? Y/n  ')
+if(indepth == 'y' or  indepth == 'Y' or indepth == 'yes' or indepth == 'Yes'):
+	dirdepth = get_html('https://raw.githubusercontent.com/rbsec/dnscan/master/subdomains-100.txt')
+	dirdepth = dirdepth.split()
+	for dirs in dirdepth:
+		commonsubs.append(dirs)
 
 if(subdoms == 'y' or  subdoms == 'Y' or subdoms == 'yes' or subdoms == 'Yes'):
 	for subs in commonsubs:
-		if(get_html(webpage+"/"+subs) != "Error"):
+		if(get_html(webpage+"/"+subs) != "Failed connection" or get_html(webpage+"/"+subs).count("404") < 1):
 			htmlpage = htmlpage + get_html(webpage+"/"+subs)
-			print(webpage+"/"+subs + " info found an added")
+			print(webpage+"/"+subs)
 
-suffixes = ["2020", "2021", "2023","123","2022","1234","xxx", "1", "$","qwerty","66","1122",'321','420','69','one','One','admin','7','77']
+morewebsites = input("Do you wanna add another website. Y/n?  ")
+while morewebsites == 'y' or morewebsites == 'yes' or morewebsites == 'Y' or morewebsites == 'Yes':
+	webpage2 = input('Enter website to grab info from. Example: http://company.com or http://socialmedia.com/personalprofile ')
+	if (webpage2.count("http")==0):
+		webpage2 = 'https://'+webpage2
+	htmlpage = htmlpage + get_html(webpage2)
+	print(webpage2 + " info found an added")
+	morewebsites = input("Do you wanna add another website. Y/n?  ")
+
+
+suffixes = ["2020", "2021", "2023","123","2022","1234","xxx", "1", "$","qwerty","66","1122",'321','420','69','one','One','admin','7','77',
+'1995','58','1996','1987','1994','1988','1985','1983','1992','1982','1984','1986','2000','987','989','000','98','96','00','87','76','79','99','75','64','11']
 connectors = ["-", ".","_","/","!","@",'#','$']
 
 datelist = htmlpage.split()
@@ -106,8 +126,14 @@ for dates in datelist:
 #removing duplicates in suffixes
 suffixes = [*set(suffixes)]
 
-#removing unnecesary words
-unnecessary = [" is"," are"," the", " of", " they", " them", " she", " he", " these", " what", " when"," where"," who"," is", " no", " yes", " good", " bad", " a ", " this", "This ", " up ", " one ", " time ", '"', ':', '(', ')', " you'll ", " comments ", " point ", " by ", "support", " hours ", " hour ", "minutes", "seconds", "first", "second", " third ", "information", " user ", " my ", " which ", "terms", "privacy", "entries", " don't ", " doesn't ", " should ", " shouldn't ", ",", " discussion ", " login ", " store ", " forum ", " discuss ", ". ", "could", "couldn't", " public ", " rights ", "search", " general ", " layout ", " since ", " options ", " before ", " after ", " going ", " please ", " let's ", " however ", " check ", " comes ", " engagement ", "today ", "authentication", " though ", " provide ", ' while ', ' and ', '...', ' including ', ' includes ', ' findings ', ' finding ', 'about']
+#filtering unnecesary common words
+unnecessary = ['error']
+
+maybetoocommon = get_html('https://gist.githubusercontent.com/deekayen/4148741/raw/98d35708fa344717d8eee15d11987de6c8e26d7d/1-1000.txt')
+maybetoocommon = maybetoocommon.lower().split()
+
+for toocommon in maybetoocommon:
+	unnecessary.append(' '+toocommon+' ')
 
 for words in unnecessary:
 	htmlpage = htmlpage.lower().replace(words, " ")
@@ -149,9 +175,10 @@ with open("leastcommonwords.txt","w") as file:
 shufflingoptions = input("""What you wanna do now?
 1-Add capitalization and suffixes to words. Example: blah into blah2020, Blah123.
 2-Randomly combine common and least common words found. Example: words blah and bleh into blah@bleh or Blah.Bleh
+3-Do both
 """)
 
-if(int(shufflingoptions) == 1 ):
+if(int(shufflingoptions) == 1 or int(shufflingoptions) == 3):
 	with open("finalwordlist.txt","w") as file:
 		for words in common:
 			file.write(words+"\n")
@@ -179,7 +206,7 @@ if(int(shufflingoptions) == 1 ):
 		print("added suffixes to least common wordlist and saved as finalwithleastcommon.txt")
 	with open("finalwithleastcommon.txt","r") as file:
 		print(str(len(file.readlines())) + " words")
-if(int(shufflingoptions) == 2 ):
+if(int(shufflingoptions) == 2 or int(shufflingoptions) == 3):
 	connectors.append("")
 	with open("randomcombinations.txt","w") as file:
 		for i in range(0, 2500):	
@@ -197,3 +224,4 @@ if(int(shufflingoptions) == 2 ):
 	with open("randomcombinations.txt","r") as file:
 		print(str(len(file.readlines())) + " words")
 				
+		
