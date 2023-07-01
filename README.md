@@ -13,6 +13,7 @@ Requires BeautifulSoup module, run the following command on your terminal or pyt
 
 ```
 pip install beautifulsoup4
+pip install python-dateutil
 ```
 
 Using Pot of words examples:
