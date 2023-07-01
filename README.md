@@ -9,11 +9,12 @@ Update 6/23/2023: Pot of words also now creates least common words list, added t
 
 Update 6/25/2023: Now with the ability of more in depth directory fuzzing and the option to add more websites, better filtering of too common words that do not give interesting password lists, added more common suffixes (Those where got doing statistical analisys to public common password wordlist to see the most common suffixes) 
 
-Requires BeautifulSoup module, run the following command on your terminal or python interpreter:
+Requires BeautifulSoup, dateutil and requests module, run the following command on your terminal or python interpreter:
 
 ```
 pip install beautifulsoup4
 pip install python-dateutil
+pip install requests
 ```
 
 Using Pot of words examples:
