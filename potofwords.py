@@ -72,11 +72,11 @@ commonsubs = ["about", "info", "contact","blog","blogs","posts","faq","friends",
 subdoms = input("Attempt gathering from subdomains? Example: webpage.com will be added adresses like webpage.com/about. Y/n? ")
 if(subdoms == 'y' or  subdoms == 'Y' or subdoms == 'yes' or subdoms == 'Yes'):
 	indepth = input('Wanna explore directories in depth? 100 directories? Y/n  ')
-if(indepth == 'y' or  indepth == 'Y' or indepth == 'yes' or indepth == 'Yes'):
-	dirdepth = get_html('https://raw.githubusercontent.com/rbsec/dnscan/master/subdomains-100.txt')
-	dirdepth = dirdepth.split()
-	for dirs in dirdepth:
-		commonsubs.append(dirs)
+	if(indepth == 'y' or  indepth == 'Y' or indepth == 'yes' or indepth == 'Yes'):
+		dirdepth = get_html('https://raw.githubusercontent.com/rbsec/dnscan/master/subdomains-100.txt')
+		dirdepth = dirdepth.split()
+		for dirs in dirdepth:
+			commonsubs.append(dirs)
 
 if(subdoms == 'y' or  subdoms == 'Y' or subdoms == 'yes' or subdoms == 'Yes'):
 	for subs in commonsubs:
