@@ -1,26 +1,29 @@
 # Pot of Words (Personalized password lists)
 The forbidden spell to draw more passwords!
 
-![PotofWords](https://github.com/raskolnikov90/potofwords.py/assets/44821234/16d53a7f-80ba-4085-ad6e-7504bd343388)
+![PotofWords1](https://github.com/raskolnikov90/potofwords.py/assets/44821234/37f62acf-7570-44cd-ba5a-55633563bb9f)
 
   Usually when pentesting using bruteforce attacks we use common password lists like rockyou.txt or SecLists, but if brute force attacks fail using those lists it may be easy to assume the target is using secure passwords but many times it is possible to guess their passwords by manualy doing deep reconnaissance and guessing some possible passwords out of it. What if we were able to automatize this deep recoinassance phase to get possible passwords? potofwords.py does this by grabbing common words in a webpage url you provide, creating common words lists and creating a password list by adding common special characters and suffixes to our findings(For example to the word shingeki will be added stuff and become Shingeki/123 making it more likely we may guess a possible password that uses that word)
 
-Update 6/23/2023: Pot of words also now creates least common words list, added the option of randomly combine common and least common words (Example: sonic and mario will be randomly combined into sonicmario or Mario.Sonic)
+MAJOR UPDATE 8/6/2023:
+-Pot of words will find most and least common words and add prefixes and suffixes, It will also add rules like variations of leetspeak, reverse the word and shuffle letters
+-It will also create a passphrase list that combine 2 words and 3 words using phrases from the website you provide and also add them prefixes, suffixes and rules
+-The suffix/prefix list was fully updated and expanded using the results from my analysis of complex passwords that can be found here: 
+https://github.com/raskolnikov90/ComplexPassAnalysisAndWordlists
+-It now incorporates the datefinder module in order to find dates in the websites you provide and use them as prefix and suffix
 
-Update 6/25/2023: Now with the ability of more in depth directory fuzzing and the option to add more websites, better filtering of too common words that do not give interesting password lists, added more common suffixes (Those where got doing statistical analisys to public common password wordlist to see the most common suffixes) 
-
-Requires BeautifulSoup, dateutil and requests module, run the following command on your terminal or python interpreter:
+Requires BeautifulSoup, dateutil, datefinder and requests module, run the following command on your terminal or python interpreter:
 
 ```
 pip install beautifulsoup4
 pip install python-dateutil
 pip install requests
+pip install datefinder
 ```
 
 Using Pot of words examples:
-![image](https://github.com/raskolnikov90/potofwords.py/assets/44821234/37868421-d890-4742-8f0a-7ad9fca4ab0e)
+![PotofWords2](https://github.com/raskolnikov90/potofwords.py/assets/44821234/3ef5667c-935a-45e2-83a2-d4d3e8a49297)
 
-![image](https://github.com/raskolnikov90/potofwords.py/assets/44821234/9f19915c-f5ac-4aa5-9742-94edbad1c872)
-
+![potofwordsample](https://github.com/raskolnikov90/potofwords.py/assets/44821234/43a0ee28-487f-44a8-8bc7-187c9baa41fb)
 
 
